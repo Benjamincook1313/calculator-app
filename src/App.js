@@ -16,37 +16,38 @@ const Num = styled.button`
 function App() {
 
   const [calc, setCalc] = useState(['2', '+', '5']);
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState('');
 
   const handleNum = (num) => {
     let copy = [...calc];
     let last = copy.length-1;
 
-    if(total) {
-      setCalc([]);
-      setTotal();
-    };
-
-    if(copy[last] === '+' || copy[last] === '-' || copy[last] === 'x' || copy[last] === '/'){
-      copy.push(num);
-    }else copy[last] += `${num}`;
+    if(copy[last] !== '-' && copy[last] !== '+' && copy[last] !== '*' && copy[last] !== '/'){
+      last >= 0? copy[last] += `${num}`: copy.push(`${num}`);
+    }else copy.push(`${num}`);
 
     setCalc(copy);
   }
 
   const handleOp = (op) => {
-    if(total) {
-      setCalc([total, op]);
-    }
+    if(total || total === 0) setCalc([total, op]);
     else setCalc([...calc, op]);
   }
 
   const handleClear = () => {
     setCalc([]);
-    setTotal();
+    setTotal('');
+  }
+
+  const handleDlt = () => {
+    let arr = calc.slice();
+    if(arr[arr.length-1])
+    arr.pop();
+    setCalc(arr);
   }
 
   const handleCalc = () => {
+    console.log(calc.join(' '));
     setTotal(eval(calc.join(' ')));
   }
 
@@ -72,9 +73,10 @@ function App() {
           <div style={{color: 'lightgoldenrodyellow'}}>{total}</div>
         </div>
         <section className='operators'>
+          <Operator onClick={() => handleDlt('+')}>Delete</Operator>
           <Operator onClick={() => handleOp('+')}>+</Operator>
           <Operator onClick={() => handleOp('-')}>-</Operator>
-          <Operator onClick={() => handleOp('x')}>x</Operator>
+          <Operator onClick={() => handleOp('*')}>x</Operator>
           <Operator onClick={() => handleOp('/')}>/</Operator>
         </section>
         <section className='nums'>
